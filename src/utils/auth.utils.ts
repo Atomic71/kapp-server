@@ -1,7 +1,8 @@
 import { User, ValidationCode } from '@prisma/client';
 import { z } from 'zod';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { env } from '../env/server.mjs';
+
 export const phoneSchema = z.string().startsWith('+387').length(12);
 export const codeSchema = z.string();
 export const loginSchema = z.object({
@@ -21,11 +22,13 @@ export const createValidationCode = () => {
 };
 export enum TokenType {
   VALIDATION = 'validation',
+  STANDARD = 'standard',
 }
 
-type SignPayload = {
+export type SignPayload = {
   userId: User['id'];
-  codeId: ValidationCode['id'];
+  role?: User['role'];
+  validated?: User['validated'];
   type: TokenType;
 };
 
@@ -40,7 +43,7 @@ export const signJwt = (payload: SignPayload) => {
 };
 
 export const readJwt = (payload: string) => {
-  const token = jwt.verify(payload, env.JWT_SECRET);
+  const token = jwt.verify(payload, env.JWT_SECRET, {});
   console.log(`decoded token: ${token}`);
   return token;
 };

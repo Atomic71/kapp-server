@@ -1,6 +1,7 @@
 import {
   loginSchema,
   signJwt,
+  SignPayload,
   TokenType,
   validateSchema,
 } from './../../utils/auth.utils';
@@ -14,14 +15,13 @@ export const authRouter = createRouter()
     async resolve({ input, ctx }) {
       console.log(`hello ${input.phone}`);
       try {
-        const { codeId, userId } = await issueValidation(
-          input.phone,
-          ctx.prisma
-        );
+        const { userId } = await issueValidation(input.phone, ctx.prisma);
 
-        const token = signJwt({ userId, codeId, type: TokenType.VALIDATION });
-
-        console.log(token);
+        const token = signJwt({
+          userId,
+          validated: false,
+          type: TokenType.VALIDATION,
+        });
 
         return {
           ok: true,
@@ -39,9 +39,22 @@ export const authRouter = createRouter()
     async resolve({ input: { code }, ctx }) {
       console.log(ctx?.user);
       if (ctx.user) {
-        const { userId, codeId } = ctx.user;
-        const payload = { userId, codeId, code };
+        const { userId } = ctx.user;
+        const payload = { userId, code };
         const user = await checkValidation(payload, ctx.prisma);
+        if (user) {
+          const { id: userId, validated, role } = user;
+
+          return {
+            ok: true,
+            token: signJwt({
+              type: TokenType.STANDARD,
+              validated,
+              userId,
+              role,
+            }),
+          };
+        }
       }
       return {};
     },

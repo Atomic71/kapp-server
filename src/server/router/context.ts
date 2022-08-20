@@ -1,4 +1,5 @@
-import { readJwt } from './../../utils/auth.utils';
+import { JwtPayload } from 'jsonwebtoken';
+import { readJwt, SignPayload } from './../../utils/auth.utils';
 // src/server/router/context.ts
 import * as trpc from '@trpc/server';
 import * as trpcNext from '@trpc/server/adapters/next';
@@ -15,7 +16,7 @@ type CreateContextOptions = Record<string, any>;
  **/
 export const createContextInner = async (opts: CreateContextOptions) => {
   return {
-    user: opts.user || null,
+    user: (opts.user as SignPayload & JwtPayload) || null,
     prisma,
   };
 };

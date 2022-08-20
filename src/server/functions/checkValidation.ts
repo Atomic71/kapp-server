@@ -1,18 +1,32 @@
 import { PrismaClient } from '@prisma/client';
-import { User, ValidationCode } from '@prisma/client';
+import { User } from '@prisma/client';
 type PerformValidationOpts = {
   userId: User['id'];
-  codeId: ValidationCode['id'];
   code: string;
+};
+
+const markUserAsValidated = (prisma: PrismaClient, userId: User['id']) => {
+  return prisma.user.update({
+    data: {
+      validated: true,
+      ValidationCode: {
+        deleteMany: {
+          userId,
+        },
+      },
+      role: 'MEMBER',
+    },
+    where: { id: userId },
+  });
 };
 
 export default async function checkValidation(
   options: PerformValidationOpts,
   prisma: PrismaClient
 ) {
-  const { userId, codeId, code } = options;
+  const { userId, code } = options;
 
-  const where = { id: codeId, userId, used: false, code };
+  const where = { userId, used: false, code };
 
   const validationCode = await prisma.validationCode.findFirstOrThrow({
     where,
@@ -20,17 +34,6 @@ export default async function checkValidation(
   });
 
   if (validationCode) {
-    return await prisma.user.update({
-      data: {
-        validated: true,
-        ValidationCode: {
-          deleteMany: {
-            userId,
-          },
-        },
-        role: 'MEMBER',
-      },
-      where: { id: userId },
-    });
+    return await markUserAsValidated(prisma, userId);
   }
 }

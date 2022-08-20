@@ -37,7 +37,7 @@ const assignNewCodeToUser = async (
     },
   });
   const code = createValidationCode();
-  await prisma.user.update({
+  const user = await prisma.user.update({
     data: {
       ValidationCode: {
         create: {
@@ -55,7 +55,10 @@ const assignNewCodeToUser = async (
     select: { id: true },
   });
 
-  return { codeId, userId };
+  return {
+    codeId,
+    userId,
+  };
 };
 
 async function issueValidation(phone: string, prisma: PrismaClient) {
