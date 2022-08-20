@@ -3,19 +3,33 @@ import Head from 'next/head';
 import { FormEvent, useState } from 'react';
 import { trpc } from '../utils/trpc';
 
-const Home: NextPage = () => {
+const LoginForm = () => {
   const [phone, setPhone] = useState('+38766883112');
-  const a = trpc.useMutation('auth.validate');
+  const validation = trpc.useMutation('auth.validate', {
+    onError: (error) => {
+      window.alert(error.message);
+    },
+  });
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    try {
-      a.mutateAsync({ phone });
-    } catch (error) {
-      console.error(error);
-    }
-    console.log(phone);
+    validation.mutate({ phone });
   };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type='text'
+        value={phone}
+        className='border border-green-500 p-4'
+        onChange={(e) => setPhone(e.target.value)}
+      />
+      <input type='submit' />
+    </form>
+  );
+};
+
+const Home: NextPage = () => {
   return (
     <>
       <Head>
@@ -25,23 +39,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className='container mx-auto flex flex-col items-center justify-center min-h-screen p-4'>
-        <h1 className='text-5xl md:text-[5rem] leading-normal font-extrabold text-gray-700'>
-          Welcome!
-        </h1>
-        <p className='text-2xl text-gray-700'>
-          Please authenticate yourself using the form below
-        </p>
-        <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            value={phone}
-            className='border border-green-500 p-4'
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <input type='submit' />
-        </form>
-
-        <div className='pt-6 text-2xl text-blue-500 flex justify-center items-center w-full'></div>
+        <LoginForm />
       </main>
     </>
   );
