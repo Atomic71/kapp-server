@@ -39,5 +39,11 @@ export const signJwt = (payload: SignPayload) => {
   return token;
 };
 
+export const readJwt = (payload: string) => {
+  const token = jwt.verify(payload, env.JWT_SECRET);
+  console.log(`decoded token: ${token}`);
+  return token;
+};
+
 export type ILogin = z.infer<typeof loginSchema>;
 export type IValidate = z.infer<typeof validateSchema>;

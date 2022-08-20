@@ -66,4 +66,5 @@ async function issueValidation(phone: string, prisma: PrismaClient) {
     return await assignNewCodeToUser(prisma, user.id, phone);
   }
 }
+
 export default issueValidation;

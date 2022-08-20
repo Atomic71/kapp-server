@@ -9,6 +9,11 @@ const LoginForm = () => {
     onError: (error) => {
       window.alert(error.message);
     },
+    onSuccess: (data) => {
+      if (data.ok) {
+        localStorage.setItem('token', data.token);
+      }
+    },
   });
 
   const handleSubmit = (e: FormEvent) => {

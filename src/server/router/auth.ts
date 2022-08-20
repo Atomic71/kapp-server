@@ -6,6 +6,7 @@ import {
 } from './../../utils/auth.utils';
 import { createRouter } from './context';
 import issueValidation from '../functions/issueValidation';
+import checkValidation from '../functions/checkValidation';
 
 export const authRouter = createRouter()
   .mutation('startValidation', {
@@ -35,8 +36,13 @@ export const authRouter = createRouter()
   })
   .mutation('validate', {
     input: validateSchema,
-    resolve({ input }) {
-      console.log(input.code);
+    async resolve({ input: { code }, ctx }) {
+      console.log(ctx?.user);
+      if (ctx.user) {
+        const { userId, codeId } = ctx.user;
+        const payload = { userId, codeId, code };
+        const user = await checkValidation(payload, ctx.prisma);
+      }
       return {};
     },
   });

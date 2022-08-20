@@ -22,9 +22,15 @@ export default withTRPC<AppRouter>({
      * @link https://trpc.io/docs/ssr
      */
     const url = `${getBaseUrl()}/api/trpc`;
-
+    console.log('yloo');
     return {
       url,
+      headers() {
+        const token = localStorage.getItem('token');
+        return {
+          ...(token ? { Authorization: token } : {}),
+        };
+      },
       transformer: superjson,
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
