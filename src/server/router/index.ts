@@ -3,6 +3,7 @@ import { createRouter } from './context';
 import superjson from 'superjson';
 
 import { authRouter } from './auth';
+import { userRouter } from './user';
 import { ZodError } from 'zod';
 
 export const appRouter = createRouter()
@@ -19,7 +20,8 @@ export const appRouter = createRouter()
       data: {},
     };
   })
-  .merge('auth.', authRouter);
+  .merge('auth.', authRouter)
+  .merge('user.', userRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
