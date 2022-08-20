@@ -1,11 +1,10 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { LoginForm, ValidationForm } from '../components';
+import { LoginForm, LogoutCta, ValidationForm } from '../components';
 import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
   const user = trpc.useQuery(['user.me']);
-
   return (
     <>
       <Head>
@@ -15,10 +14,25 @@ const Home: NextPage = () => {
       </Head>
 
       <main className='container mx-auto flex flex-col items-center justify-center min-h-screen p-4'>
-        {user.data ? user.data.id : <div>nema</div>}
-        <LoginForm />
+        {user.data ? (
+          [user.data.id, user.data.validated].join(', validated: ')
+        ) : (
+          <div>nema</div>
+        )}
         <br />
-        <ValidationForm />
+        <div className='flex flex-col items-start gap-5'>
+          <h3>
+            Login:
+            <LoginForm />
+          </h3>
+          <h3>
+            Login:
+            <ValidationForm />
+          </h3>
+          <div className='self-end'>
+            <LogoutCta />
+          </div>
+        </div>
       </main>
     </>
   );

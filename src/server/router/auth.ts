@@ -1,7 +1,6 @@
 import {
   loginSchema,
   signJwt,
-  SignPayload,
   TokenType,
   validateSchema,
 } from './../../utils/auth.utils';
@@ -57,5 +56,24 @@ export const authRouter = createRouter()
         }
       }
       return {};
+    },
+  })
+  .mutation('logout', {
+    async resolve({ ctx }) {
+      const loggedOutUser = await ctx.prisma.user.update({
+        where: { id: ctx.user.userId },
+        data: {
+          validated: false,
+        },
+      });
+
+      return {
+        ok: true,
+        token: signJwt({
+          validated: false,
+          type: TokenType.BASIC,
+          userId: loggedOutUser.id,
+        }),
+      };
     },
   });
