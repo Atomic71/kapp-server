@@ -5,7 +5,7 @@ import { trpc } from '../utils/trpc';
 
 const LoginForm = () => {
   const [phone, setPhone] = useState('+38766883112');
-  const validation = trpc.useMutation('auth.validate', {
+  const startValidation = trpc.useMutation('auth.startValidation', {
     onError: (error) => {
       window.alert(error.message);
     },
@@ -13,7 +13,7 @@ const LoginForm = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    validation.mutate({ phone });
+    startValidation.mutate({ phone });
   };
 
   return (
