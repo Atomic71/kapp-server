@@ -28,6 +28,31 @@ const LoginForm = () => {
     </form>
   );
 };
+const ValidationForm = () => {
+  const [code, setCode] = useState('');
+  const startValidation = trpc.useMutation('auth.validate', {
+    onError: (error) => {
+      window.alert(error.message);
+    },
+  });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    startValidation.mutate({ code });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type='text'
+        value={code}
+        className='border border-green-500 p-4'
+        onChange={(e) => setCode(e.target.value)}
+      />
+      <input type='submit' />
+    </form>
+  );
+};
 
 const Home: NextPage = () => {
   return (
@@ -40,6 +65,8 @@ const Home: NextPage = () => {
 
       <main className='container mx-auto flex flex-col items-center justify-center min-h-screen p-4'>
         <LoginForm />
+        <br />
+        <ValidationForm />
       </main>
     </>
   );

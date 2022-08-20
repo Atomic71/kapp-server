@@ -1,6 +1,10 @@
+import {
+  loginSchema,
+  signJwt,
+  TokenType,
+  validateSchema,
+} from './../../utils/auth.utils';
 import { createRouter } from './context';
-import { loginSchema } from '../../utils/auth.utils';
-import { z } from 'zod';
 import issueValidation from '../functions/issueValidation';
 
 export const authRouter = createRouter()
@@ -9,9 +13,18 @@ export const authRouter = createRouter()
     async resolve({ input, ctx }) {
       console.log(`hello ${input.phone}`);
       try {
-        await issueValidation(input.phone, ctx.prisma);
+        const { codeId, userId } = await issueValidation(
+          input.phone,
+          ctx.prisma
+        );
+
+        const token = signJwt({ userId, codeId, type: TokenType.VALIDATION });
+
+        console.log(token);
+
         return {
           ok: true,
+          token,
         };
       } catch (error) {
         return {
@@ -21,9 +34,9 @@ export const authRouter = createRouter()
     },
   })
   .mutation('validate', {
-    input: z.string(),
+    input: validateSchema,
     resolve({ input }) {
-      console.log(input);
+      console.log(input.code);
       return {};
     },
   });
