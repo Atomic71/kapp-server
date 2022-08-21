@@ -11,6 +11,7 @@ export const serverSchema = z.object({
   JWT_SECRET: z.string(),
   LOGFLARE_API_KEY: z.string(),
   LOGFLARE_SOURCE_TOKEN: z.string(),
+  BLOOD_STORAGE_STALE_MS: z.string(),
 });
 
 /**
