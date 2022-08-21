@@ -10,6 +10,7 @@ export const serverSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']),
   JWT_SECRET: z.string(),
   LOGFLARE_API_KEY: z.string(),
+  LOGFLARE_SOURCE_TOKEN: z.string(),
 });
 
 /**

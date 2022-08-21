@@ -5,7 +5,7 @@ import { env } from '../../env/server.mjs';
 // create pino-logflare console stream for serverless functions and send function for browser logs
 const { stream, send } = logflarePinoVercel({
   apiKey: env.LOGFLARE_API_KEY,
-  sourceToken: '3506f105-02a6-4118-bbb4-3f05e5d684b2',
+  sourceToken: env.LOGFLARE_SOURCE_TOKEN,
 });
 
 // create pino loggger

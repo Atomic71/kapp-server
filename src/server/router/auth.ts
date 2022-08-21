@@ -1,5 +1,6 @@
 import checkValidation from '../functions/checkValidation';
 import issueValidation from '../functions/issueValidation';
+import logger from '../logger/logger';
 import {
   loginSchema,
   signJwt,
@@ -7,6 +8,7 @@ import {
   validateSchema,
 } from './../../utils/auth.utils';
 import { createRouter } from './context';
+
 export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
@@ -27,6 +29,7 @@ export const authRouter = createRouter()
         };
       } catch (error) {
         console.log(error);
+        logger.error(error, 'something went wrong in auth');
         return {
           error: 'sth went wrong',
           debug: JSON.stringify(error),
