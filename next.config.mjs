@@ -14,14 +14,12 @@ function defineNextConfig(config) {
 }
 
 const wpaConfig = withPWA({
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-  },
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
 });
 
-delete wpaConfig.pwa;
+// delete wpaConfig.pwa;
 
 export default defineNextConfig({
   reactStrictMode: true,
