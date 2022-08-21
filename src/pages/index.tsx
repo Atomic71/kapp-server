@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { LoginForm, LogoutCta, ValidationForm } from '../components';
+import { LoginForm, LogoutCta, ValidationForm } from '../components/auth';
 import { trpc } from '../utils/trpc';
 import { env } from '../env/client.mjs';
 

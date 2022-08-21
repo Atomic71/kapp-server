@@ -1,4 +1,4 @@
-import { LogoutCta } from '.';
+import { LogoutCta } from './auth';
 import { trpc } from '../utils/trpc';
 
 const Navbar: React.FC = () => {
