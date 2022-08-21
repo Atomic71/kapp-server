@@ -1,3 +1,5 @@
+import checkValidation from '../functions/checkValidation';
+import issueValidation from '../functions/issueValidation';
 import {
   loginSchema,
   signJwt,
@@ -5,9 +7,6 @@ import {
   validateSchema,
 } from './../../utils/auth.utils';
 import { createRouter } from './context';
-import issueValidation from '../functions/issueValidation';
-import checkValidation from '../functions/checkValidation';
-
 export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
@@ -27,8 +26,10 @@ export const authRouter = createRouter()
           token,
         };
       } catch (error) {
+        console.log(error);
         return {
           error: 'sth went wrong',
+          debug: JSON.stringify(error),
         };
       }
     },
