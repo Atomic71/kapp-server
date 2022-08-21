@@ -19,7 +19,7 @@
     "@trpc/server": "^9.27.1",
     "dayjs": "^1.11.5",
     "jsonwebtoken": "^8.5.1",
-    "next": "12.2.0",
+    "next": "12.2.5",
     "next-pwa": "shadowwalker/next-pwa#master",
     "pino": "^8.4.2",
     "pino-logflare": "^0.3.12",
