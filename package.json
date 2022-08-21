@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "next build && next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
@@ -19,6 +20,7 @@
     "dayjs": "^1.11.5",
     "jsonwebtoken": "^8.5.1",
     "next": "12.2.5",
+    "next-pwa": "5.4",
     "pino": "^8.4.2",
     "pino-logflare": "^0.3.12",
     "react": "18.2.0",
