@@ -88,4 +88,19 @@ const LogoutCta = () => {
     </button>
   );
 };
-export { LoginForm, ValidationForm, LogoutCta };
+
+const AuthWidget = () => {
+  return (
+    <div>
+      <h3>
+        Login:
+        <LoginForm />
+      </h3>
+      <h3>
+        Validacija:
+        <ValidationForm />
+      </h3>
+    </div>
+  );
+};
+export { AuthWidget, LogoutCta };

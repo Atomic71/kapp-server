@@ -13,7 +13,6 @@ export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
     async resolve({ input, ctx }) {
-      APP_STREAM_LOGGER.warn({}, 'yooo');
       logger.info(
         {
           phone: input.phone,
