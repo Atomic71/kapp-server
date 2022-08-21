@@ -7,7 +7,7 @@ const { stream, send } = logflarePinoVercel({
   sourceToken: env.LOGFLARE_SOURCE_TOKEN,
 });
 
-export const streamNode = pino(
+export const APP_STREAM_LOGGER = pino(
   { level: 'debug' },
   createWriteStream({
     apiKey: env.LOGFLARE_API_KEY,
