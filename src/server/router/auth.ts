@@ -13,7 +13,12 @@ export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
     async resolve({ input, ctx }) {
-      // logger.info({}, `hello ${input.phone}`);
+      logger.info(
+        {
+          phone: input.phone,
+        },
+        `validation starting: `
+      );
       try {
         const { userId } = await issueValidation(input.phone, ctx.prisma);
 
