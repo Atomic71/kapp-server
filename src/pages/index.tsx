@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <link rel='icon' href={`${faviconHrefPrefix}/favicon.ico`} />
       </Head>
 
-      <main className='container mx-auto flex flex-col items-center justify-center min-h-screen p-4'>
+      <div className='container mx-auto flex flex-col items-center justify-center flex-grow p-4'>
         {user.data ? (
           [user.data.id, user.data.validated].join(', validated: ')
         ) : (
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
             <LogoutCta />
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };
