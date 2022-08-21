@@ -16,11 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className='container mx-auto flex flex-col items-center justify-center flex-grow p-4'>
-        {user.data ? (
-          [user.data.id, user.data.validated].join(', validated: ')
-        ) : (
-          <div>nema</div>
-        )}
+        {!user.data && 'hello, guest'}
         <br />
         <div className='flex flex-col items-start gap-5'>
           {!user.data?.validated && <AuthWidget />}
