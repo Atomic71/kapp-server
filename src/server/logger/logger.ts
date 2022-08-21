@@ -1,4 +1,4 @@
-import pino from 'pino';
+import pino, { LoggerOptions } from 'pino';
 import { logflarePinoVercel } from 'pino-logflare';
 import { env } from '../../env/server.mjs';
 
@@ -9,21 +9,21 @@ const { stream, send } = logflarePinoVercel({
 });
 console.log(process.env.NODE_ENV);
 // create pino loggger
-const logger = pino(
-  {
-    browser: {
-      transmit: {
-        send: send,
-      },
-    },
-    level: 'debug',
-    base: {
-      // processes_str: JSON.stringify(process.versions),
-      env: process.env.NODE_ENV,
-      revision: process.env.VERCEL_GITHUB_COMMIT_SHA,
+
+const pinoOptions: LoggerOptions = {
+  browser: {
+    transmit: {
+      level: 'info',
+      send: send,
     },
   },
-  stream
-);
+  level: 'debug',
+  base: {
+    env: process.env.NODE_ENV,
+    revision: process.env.VERCEL_GITHUB_COMMIT_SHA,
+  },
+};
+
+const logger = pino(pinoOptions, stream);
 
 export default logger;
