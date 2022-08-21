@@ -2,13 +2,10 @@ import pino, { LoggerOptions } from 'pino';
 import { logflarePinoVercel } from 'pino-logflare';
 import { env } from '../../env/server.mjs';
 
-// create pino-logflare console stream for serverless functions and send function for browser logs
 const { stream, send } = logflarePinoVercel({
   apiKey: env.LOGFLARE_API_KEY,
   sourceToken: env.LOGFLARE_SOURCE_TOKEN,
 });
-console.log(process.env.NODE_ENV);
-// create pino loggger
 
 const pinoOptions: LoggerOptions = {
   browser: {
@@ -24,6 +21,4 @@ const pinoOptions: LoggerOptions = {
   },
 };
 
-const logger = pino(pinoOptions, stream);
-
-export default logger;
+export default pino(pinoOptions, stream);
