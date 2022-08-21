@@ -30,5 +30,7 @@ export const clientSchema = z.object({
  * @type {{ [k in keyof z.infer<typeof clientSchema>]: z.infer<typeof clientSchema>[k] | undefined }}
  */
 export const clientEnv = {
-  NEXT_PUBLIC_PATH: '/uat',
+  NEXT_PUBLIC_PATH: z
+    .enum(['/uat', '/prod'])
+    .parse(process.env.NEXT_PUBLIC_PATH),
 };
