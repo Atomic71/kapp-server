@@ -1,6 +1,6 @@
 import checkValidation from '../functions/checkValidation';
 import issueValidation from '../functions/issueValidation';
-import logger from '../logger/logger';
+import logger, { streamNode } from '../logger/logger';
 import {
   loginSchema,
   signJwt,
@@ -13,6 +13,8 @@ export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
     async resolve({ input, ctx }) {
+      streamNode.warn({}, 'yooo');
+      logger.warn({}, 'yooo');
       logger.info(
         {
           phone: input.phone,
