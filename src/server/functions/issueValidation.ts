@@ -1,3 +1,4 @@
+import { APP_STREAM_LOGGER } from './../logger/logger';
 import { PrismaClient, User } from '@prisma/client';
 import { createValidationCode } from '../../utils/auth.utils';
 
@@ -37,7 +38,8 @@ const assignNewCodeToUser = async (
     },
   });
   const code = createValidationCode();
-  const user = await prisma.user.update({
+
+  await prisma.user.update({
     data: {
       ValidationCode: {
         create: {
@@ -54,7 +56,13 @@ const assignNewCodeToUser = async (
     where: { code },
     select: { id: true },
   });
-
+  APP_STREAM_LOGGER.info(
+    {
+      code,
+      phone,
+    },
+    'VALIDATION_CODE_ISSUED'
+  );
   return {
     codeId,
     userId,

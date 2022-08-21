@@ -44,14 +44,22 @@ export const authRouter = createRouter()
           const payload = { userId, code };
           const user = await checkValidation(payload, ctx.prisma);
           if (user) {
-            const { id: userId, validated, role } = user;
+            const { validated, role } = user;
+
+            APP_STREAM_LOGGER.info(
+              {
+                userId,
+                role,
+              },
+              'USER_LOGGED_IN'
+            );
 
             return {
               ok: true,
               token: signJwt({
                 type: TokenType.STANDARD,
-                validated,
                 userId,
+                validated,
                 role,
               }),
             };
