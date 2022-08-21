@@ -86,24 +86,23 @@ const bloodStorageInfoResponse = [
 
 let bloodState: typeof bloodStorageInfoResponse;
 let timestamp: Dayjs;
-const fetchBloodStorageState = async (): Promise<
-  typeof bloodStorageInfoResponse
-> => {
+const fetchBloodStorageState = async (
+  useForce = false
+): Promise<typeof bloodStorageInfoResponse> => {
   if (env.NODE_ENV !== 'production') {
-    console.log('returned blood storage data locally');
     return Promise.resolve(bloodStorageInfoResponse);
   }
   try {
     const isStale =
       dayjs(timestamp).isValid() &&
       dayjs(timestamp)
-        .add(Number(env.BLOOD_STORAGE_STALE_MS), 'second')
+        .add(Number(env.BLOOD_STORAGE_STALE_MS), 'millisecond')
         .isBefore(dayjs());
 
-    const shouldFetch = !bloodState || isStale;
+    const shouldFetch = useForce || !bloodState || isStale;
 
     if (shouldFetch) {
-      console.log('fetching');
+      console.log('fetching remotely');
       timestamp = dayjs();
       const res = await fetch(
         'https://www.racunari-bl.com/MobAppTransfApi/api/Zalihe',
