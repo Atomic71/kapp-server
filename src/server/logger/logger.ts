@@ -7,7 +7,7 @@ const { stream, send } = logflarePinoVercel({
   apiKey: env.LOGFLARE_API_KEY,
   sourceToken: env.LOGFLARE_SOURCE_TOKEN,
 });
-
+console.log(process.env.NODE_ENV);
 // create pino loggger
 const logger = pino(
   {
@@ -18,7 +18,8 @@ const logger = pino(
     },
     level: 'debug',
     base: {
-      processes_str: JSON.stringify(process.versions),
+      // processes_str: JSON.stringify(process.versions),
+      env: process.env.NODE_ENV,
       revision: process.env.VERCEL_GITHUB_COMMIT_SHA,
     },
   },
