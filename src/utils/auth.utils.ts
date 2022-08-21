@@ -27,7 +27,7 @@ export enum TokenType {
 }
 
 export type SignPayload = {
-  userId: User['id'];
+  userId: User['id'] | null;
   role?: User['role'];
   validated?: User['validated'];
   type: TokenType;
