@@ -42,7 +42,7 @@ model User {
 
 model ValidationCode {
     id     Int     @id @default(autoincrement())
-    user   User    @relation(fields: [userId], references: [id])
+    user   User?   @relation(fields: [userId], references: [id])
     userId Int
     code   String
     used   Boolean @default(false)
