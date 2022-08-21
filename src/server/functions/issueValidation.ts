@@ -64,7 +64,9 @@ const assignNewCodeToUser = async (
 async function issueValidation(phone: string, prisma: PrismaClient) {
   const user = await getOrCreateUser(prisma, phone);
   if (user.ValidationCode.length > 5) {
-    throw new Error('hello world');
+    throw new Error(
+      'Max. number of validations reached. Please try something else'
+    );
   } else {
     return await assignNewCodeToUser(prisma, user.id, phone);
   }

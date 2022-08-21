@@ -13,7 +13,7 @@ export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
     async resolve({ input, ctx }) {
-      logger.info({}, `hello ${input.phone}`);
+      // logger.info({}, `hello ${input.phone}`);
       try {
         const { userId } = await issueValidation(input.phone, ctx.prisma);
 
@@ -27,12 +27,10 @@ export const authRouter = createRouter()
           ok: true,
           token,
         };
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
         logger.error(error, 'something went wrong in auth');
         return {
-          error: 'sth went wrong',
-          debug: JSON.stringify(error),
+          error: error?.message ? error.message : '',
         };
       }
     },
