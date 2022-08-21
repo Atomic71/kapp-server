@@ -7,7 +7,6 @@ import { env } from '../env/client.mjs';
 const faviconHrefPrefix =
   env.NEXT_PUBLIC_PATH === 'production' ? '/prod' : '/uat';
 const Home: NextPage = () => {
-  console.log(faviconHrefPrefix);
   const user = trpc.useQuery(['user.me']);
   return (
     <>

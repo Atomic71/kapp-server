@@ -17,7 +17,6 @@ export const createValidationCode = () => {
   while (strToReturn.length < 6) {
     strToReturn += chars[Math.floor(Math.random() * chars.length)];
   }
-  console.log(`validation code: ${strToReturn}`);
   return strToReturn;
 };
 export enum TokenType {
@@ -37,15 +36,11 @@ export const signJwt = (payload: SignPayload) => {
   const token = jwt.sign(payload, env.JWT_SECRET, {
     expiresIn: '7d',
   });
-
-  console.log(`token issued: ${token}`);
-
   return token;
 };
 
 export const readJwt = (payload: string) => {
   const token = jwt.verify(payload, env.JWT_SECRET, {});
-  console.log(`decoded token: ${JSON.stringify(token)}`);
   return token;
 };
 

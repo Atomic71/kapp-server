@@ -37,7 +37,6 @@ export const authRouter = createRouter()
   .mutation('validate', {
     input: validateSchema,
     async resolve({ input: { code }, ctx }) {
-      console.log(ctx?.user);
       if (ctx.user) {
         const { userId } = ctx.user;
         if (userId) {
