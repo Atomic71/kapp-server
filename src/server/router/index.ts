@@ -1,4 +1,4 @@
-// src/server/router/index.ts
+import { bloodStorageRouter } from './bloodStorage';
 import { createRouter } from './context';
 import superjson from 'superjson';
 
@@ -21,7 +21,8 @@ export const appRouter = createRouter()
     };
   })
   .merge('auth.', authRouter)
-  .merge('user.', userRouter);
+  .merge('user.', userRouter)
+  .merge('blood-storage.', bloodStorageRouter);
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
