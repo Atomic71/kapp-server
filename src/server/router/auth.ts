@@ -1,6 +1,6 @@
 import checkValidation from '../functions/checkValidation';
 import issueValidation from '../functions/issueValidation';
-import logger, { streamNode } from '../logger/logger';
+import logger, { APP_STREAM_LOGGER } from '../logger/logger';
 import {
   loginSchema,
   signJwt,
@@ -13,33 +13,25 @@ export const authRouter = createRouter()
   .mutation('startValidation', {
     input: loginSchema,
     async resolve({ input, ctx }) {
-      streamNode.warn({}, 'yooo');
-      logger.warn({}, 'yooo');
+      APP_STREAM_LOGGER.warn({}, 'yooo');
       logger.info(
         {
           phone: input.phone,
         },
         `validation starting: `
       );
-      try {
-        const { userId } = await issueValidation(input.phone, ctx.prisma);
+      const { userId } = await issueValidation(input.phone, ctx.prisma);
 
-        const token = signJwt({
-          userId,
-          validated: false,
-          type: TokenType.VALIDATION,
-        });
+      const token = signJwt({
+        userId,
+        validated: false,
+        type: TokenType.VALIDATION,
+      });
 
-        return {
-          ok: true,
-          token,
-        };
-      } catch (error: any) {
-        logger.error(error, 'something went wrong in auth');
-        return {
-          error: error?.message ? error.message : '',
-        };
-      }
+      return {
+        ok: true,
+        token,
+      };
     },
   })
   .mutation('validate', {
@@ -48,20 +40,22 @@ export const authRouter = createRouter()
       console.log(ctx?.user);
       if (ctx.user) {
         const { userId } = ctx.user;
-        const payload = { userId, code };
-        const user = await checkValidation(payload, ctx.prisma);
-        if (user) {
-          const { id: userId, validated, role } = user;
+        if (userId) {
+          const payload = { userId, code };
+          const user = await checkValidation(payload, ctx.prisma);
+          if (user) {
+            const { id: userId, validated, role } = user;
 
-          return {
-            ok: true,
-            token: signJwt({
-              type: TokenType.STANDARD,
-              validated,
-              userId,
-              role,
-            }),
-          };
+            return {
+              ok: true,
+              token: signJwt({
+                type: TokenType.STANDARD,
+                validated,
+                userId,
+                role,
+              }),
+            };
+          }
         }
       }
       return {};
@@ -69,19 +63,20 @@ export const authRouter = createRouter()
   })
   .mutation('logout', {
     async resolve({ ctx }) {
-      const loggedOutUser = await ctx.prisma.user.update({
-        where: { id: ctx.user.userId },
-        data: {
-          validated: false,
-        },
-      });
-
+      if (ctx.user.userId) {
+        await ctx.prisma.user.update({
+          where: { id: ctx.user.userId },
+          data: {
+            validated: false,
+          },
+        });
+      }
       return {
         ok: true,
         token: signJwt({
+          userId: null,
           validated: false,
           type: TokenType.BASIC,
-          userId: loggedOutUser.id,
         }),
       };
     },
