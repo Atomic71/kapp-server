@@ -6,7 +6,7 @@
   "start_url": "/",
   "name": "KAPP uat",
   "description": "Aplikacija za doniranje krvi",
-  "short_name": "short name",
+  "short_name": "KAPP UAT",
   "icons": [
     {
       "src": "/uat/icon-192x192.png",
