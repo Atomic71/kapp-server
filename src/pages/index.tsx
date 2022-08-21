@@ -32,9 +32,6 @@ const Home: NextPage = () => {
             Login:
             <ValidationForm />
           </h3>
-          <div className='self-end'>
-            <LogoutCta />
-          </div>
         </div>
       </div>
     </>
