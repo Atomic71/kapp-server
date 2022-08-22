@@ -21,15 +21,18 @@ const standardTokenSuccess = (utils = trpc.useContext()) =>
     utils.refetchQueries(['user.me']);
   });
 
-const LoginForm = () => {
+const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   const [phone, setPhone] = useState('+38766883112');
+  const utils = trpc.useContext();
   const startValidation = trpc.useMutation('auth.startValidation', {
     onError: (error) => {
       window.alert(error.message);
     },
-    onSuccess: standardTokenSuccess(trpc.useContext()),
+    onSuccess: () => {
+      standardTokenSuccess(utils);
+      if (onLogin) onLogin();
+    },
   });
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     startValidation.mutate({ phone });
@@ -47,7 +50,9 @@ const LoginForm = () => {
     </form>
   );
 };
-const ValidationForm = () => {
+const ValidationForm: React.FC<{ onSendAgain: () => void }> = ({
+  onSendAgain,
+}) => {
   const utils = trpc.useContext();
   const [code, setCode] = useState('');
   const startValidation = trpc.useMutation('auth.validate', {
@@ -63,15 +68,20 @@ const ValidationForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type='text'
-        value={code}
-        className='border border-green-500 p-4'
-        onChange={(e) => setCode(e.target.value)}
-      />
-      <input type='submit' />
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type='text'
+          value={code}
+          className='border border-green-500 p-4'
+          onChange={(e) => setCode(e.target.value)}
+        />
+        <input type='submit' />
+      </form>
+      <button type='button' onClick={() => onSendAgain()}>
+        Ponovo unesi broj
+      </button>
+    </div>
   );
 };
 const LogoutCta = () => {
@@ -88,18 +98,40 @@ const LogoutCta = () => {
     </button>
   );
 };
+enum Widget {
+  Login = 1,
+  Validation,
+}
 
-const AuthWidget = () => {
+const { Login, Validation } = Widget;
+
+type AuthWidgetProps = {
+  initialWidget: Widget;
+};
+
+const AuthWidget: React.FC<AuthWidgetProps> = ({ initialWidget }) => {
+  const [selectedWidget, setSelectedWidget] = useState<Widget>(
+    initialWidget || Login
+  );
   return (
     <div>
-      <h3>
-        Login:
-        <LoginForm />
-      </h3>
-      <h3>
-        Validacija:
-        <ValidationForm />
-      </h3>
+      {selectedWidget === Login && (
+        <h3>
+          Login:
+          <LoginForm
+            onLogin={() => {
+              setSelectedWidget(Validation);
+            }}
+          />
+        </h3>
+      )}
+
+      {selectedWidget === Validation && (
+        <h3>
+          Validacija:
+          <ValidationForm onSendAgain={() => setSelectedWidget(Login)} />
+        </h3>
+      )}
     </div>
   );
 };

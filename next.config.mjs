@@ -1,6 +1,9 @@
 import { env } from './src/env/server.mjs';
 import withPWA from 'next-pwa';
-console.log(env);
+
+if (env.NODE_ENV !== 'production') {
+  console.log({ env });
+}
 /**
  * Don't be scared of the generics here.
  * All they do is to give us autocompletion when using this.
