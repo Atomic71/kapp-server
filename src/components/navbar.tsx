@@ -2,6 +2,7 @@ import { LogoutCta } from './auth';
 import { trpc } from '../utils/trpc';
 import Image from 'next/image';
 import { env } from '../env/client.mjs';
+import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   const user = trpc.useQuery(['user.me']);
@@ -16,7 +17,14 @@ const Navbar: React.FC = () => {
           alt='kapp header logo'
         />
       </div>
-      {user.data && <LogoutCta onLogout={() => user.refetch()} />}
+      {user.data && (
+        <div className='flex'>
+          <Link href={'/profile'}>
+            <button className='p-2 bg-green-800 text-white'>Profil</button>
+          </Link>
+          <LogoutCta onLogout={() => user.refetch()} />
+        </div>
+      )}
     </nav>
   );
 };
