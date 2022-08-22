@@ -36,35 +36,36 @@ export const authRouter = createRouter()
   .mutation('validate', {
     input: validateSchema,
     async resolve({ input: { code }, ctx }) {
-      if (ctx.user) {
+      if (ctx.user?.userId) {
         const { userId } = ctx.user;
-        if (userId) {
-          const payload = { userId, code };
-          const user = await checkValidation(payload, ctx.prisma);
-          if (user) {
-            const { validated, role } = user;
+        const payload = { userId, code };
+        const user = await checkValidation(payload, ctx.prisma);
+        if (user) {
+          const { validated, role } = user;
 
-            APP_STREAM_LOGGER.info(
-              {
-                userId,
-                role,
-              },
-              'USER_LOGGED_IN'
-            );
+          APP_STREAM_LOGGER.info(
+            {
+              userId,
+              role,
+            },
+            'USER_LOGGED_IN'
+          );
 
-            return {
-              ok: true,
-              token: signJwt({
-                type: TokenType.STANDARD,
-                userId,
-                validated,
-                role,
-              }),
-            };
-          }
+          return {
+            ok: true,
+            token: signJwt({
+              type: TokenType.STANDARD,
+              userId,
+              validated,
+              role,
+            }),
+          };
         }
       }
-      return {};
+      return {
+        ok: false,
+        token: null,
+      };
     },
   })
   .mutation('logout', {
