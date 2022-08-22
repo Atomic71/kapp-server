@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { AuthWidget } from '../components/auth';
 import BloodState from '../components/bloodState';
+import { UserDashboard } from '../components/dashboard';
 import { env } from '../env/client.mjs';
 import { trpc } from '../utils/trpc';
 
@@ -19,8 +20,11 @@ const Home: NextPage = () => {
         {!user.data && 'hello, guest'}
         <br />
         <div className='flex flex-col items-start gap-5'>
-          {!user.data?.validated && <AuthWidget />}
-
+          {!user.data?.validated ? (
+            <AuthWidget onTokenChange={() => user.refetch()} />
+          ) : (
+            <UserDashboard user={user.data} />
+          )}
           <BloodState />
         </div>
       </div>
