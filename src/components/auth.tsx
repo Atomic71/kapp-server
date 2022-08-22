@@ -1,37 +1,17 @@
 import { FormEvent, useState } from 'react';
 import { inferMutationOutput, trpc } from '../utils/trpc';
 
-const onTokenSuccess =
-  (cb?: () => void) =>
-  (
-    data: inferMutationOutput<
-      'auth.validate' | 'auth.logout' | 'auth.startValidation'
-    >
-  ) => {
-    if (data.ok) {
-      localStorage.setItem('token', data.token);
-      if (cb) {
-        cb();
-      }
-    }
-  };
+type LoginFormProps = {
+  onLogin: (data: inferMutationOutput<'auth.startValidation'>) => void;
+};
 
-const standardTokenSuccess = (utils = trpc.useContext()) =>
-  onTokenSuccess(() => {
-    utils.refetchQueries(['user.me']);
-  });
-
-const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const [phone, setPhone] = useState('+38766883112');
-  const utils = trpc.useContext();
   const startValidation = trpc.useMutation('auth.startValidation', {
     onError: (error) => {
       window.alert(error.message);
     },
-    onSuccess: () => {
-      standardTokenSuccess(utils);
-      if (onLogin) onLogin();
-    },
+    onSuccess: onLogin,
   });
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -50,16 +30,21 @@ const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     </form>
   );
 };
-const ValidationForm: React.FC<{ onSendAgain: () => void }> = ({
+
+type ValidationFormProps = {
+  onValidate: (data: inferMutationOutput<'auth.validate'>) => void;
+  onSendAgain: () => void;
+};
+const ValidationForm: React.FC<ValidationFormProps> = ({
   onSendAgain,
+  onValidate,
 }) => {
-  const utils = trpc.useContext();
   const [code, setCode] = useState('');
   const startValidation = trpc.useMutation('auth.validate', {
     onError: (error) => {
       window.alert(error.message);
     },
-    onSuccess: standardTokenSuccess(utils),
+    onSuccess: onValidate,
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -84,16 +69,23 @@ const ValidationForm: React.FC<{ onSendAgain: () => void }> = ({
     </div>
   );
 };
-const LogoutCta = () => {
-  const utils = trpc.useContext();
+
+type LogoutCtaProps = {
+  onLogout: (data: inferMutationOutput<'auth.logout'>) => void;
+};
+const LogoutCta: React.FC<LogoutCtaProps> = ({ onLogout }) => {
   const logout = trpc.useMutation(['auth.logout'], {
-    onSuccess: standardTokenSuccess(utils),
+    onSuccess: onLogout,
   });
-  const handleLogout = () => {
-    logout.mutateAsync();
-  };
+
   return (
-    <button className='p-4 bg-red-200' type='button' onClick={handleLogout}>
+    <button
+      className='p-4 bg-red-200'
+      type='button'
+      onClick={() => {
+        logout.mutate();
+      }}
+    >
       Izloguj se
     </button>
   );
@@ -107,29 +99,48 @@ const { Login, Validation } = Widget;
 
 type AuthWidgetProps = {
   initialWidget?: Widget;
+  onTokenChange: () => void;
 };
-
-const AuthWidget: React.FC<AuthWidgetProps> = ({ initialWidget }) => {
+const setToken = (token: string) => {
+  localStorage.setItem('token', token);
+};
+const AuthWidget: React.FC<AuthWidgetProps> = ({
+  initialWidget,
+  onTokenChange,
+}) => {
   const [selectedWidget, setSelectedWidget] = useState<Widget>(
     initialWidget || Login
   );
+
+  const handleSetToken = ({
+    ok,
+    token,
+  }: {
+    ok: boolean;
+    token: string | null;
+  }) => {
+    if (ok && token) {
+      setToken(token);
+      onTokenChange();
+    }
+  };
+
   return (
     <div>
       {selectedWidget === Login && (
         <h3>
           Login:
-          <LoginForm
-            onLogin={() => {
-              setSelectedWidget(Validation);
-            }}
-          />
+          <LoginForm onLogin={handleSetToken} />
         </h3>
       )}
 
       {selectedWidget === Validation && (
         <h3>
           Validacija:
-          <ValidationForm onSendAgain={() => setSelectedWidget(Login)} />
+          <ValidationForm
+            onValidate={handleSetToken}
+            onSendAgain={() => setSelectedWidget(Login)}
+          />
         </h3>
       )}
     </div>

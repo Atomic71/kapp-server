@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
           alt='kapp header logo'
         />
       </div>
-      {user.data && <LogoutCta />}
+      {user.data && <LogoutCta onLogout={() => user.refetch()} />}
     </nav>
   );
 };
