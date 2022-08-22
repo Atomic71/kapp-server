@@ -106,7 +106,7 @@ enum Widget {
 const { Login, Validation } = Widget;
 
 type AuthWidgetProps = {
-  initialWidget: Widget;
+  initialWidget?: Widget;
 };
 
 const AuthWidget: React.FC<AuthWidgetProps> = ({ initialWidget }) => {
