@@ -9,20 +9,20 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className='flex justify-between px-2 py-3'>
-      <div className='cursor-pointer'>
-        <Link href='/'>
+      <Link href='/'>
+        <div className='cursor-pointer'>
           <Image
             height={68}
             width={150}
             src={env.NEXT_PUBLIC_PATH + '/navbar-logo.svg'}
             alt='kapp header logo'
           />
-        </Link>
-      </div>
+        </div>
+      </Link>
       {user.data && (
         <div className='flex'>
           <Link href={'/profile'}>
-            <button>Profil</button>
+            <button className='mr-2'>Profil</button>
           </Link>
           <LogoutCta onLogout={() => user.refetch()} />
         </div>
