@@ -80,7 +80,6 @@ const LogoutCta: React.FC<LogoutCtaProps> = ({ onLogout }) => {
 
   return (
     <button
-      className='p-4 bg-red-200'
       type='button'
       onClick={() => {
         logout.mutate();
